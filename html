@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Engine</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px;
+            text-align: center;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ffffff;
+            border-radius: 5px;
+        }
+        .autocomplete-suggestions {
+            display: none;
+            position: absolute;
+            width: 100%;
+            background-color: #bfff00;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+        .autocomplete-suggestion {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #fffffff7;
+        }
+        .autocomplete-suggestion:last-child {
+            border-bottom: none;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin: 5px 0;
+        }
+        footer {
+            background-color: #c60a0ae6;
+            color: #fff;
+            padding: 1px;
+            text-align: bottom;
+        }
+    </style>
+</head>
+<body>
+    <h1>Autocomplete Search with Click Counter</h1>
+    <input type="text" id="searchInput" placeholder="Search">
+    <div class="autocomplete-suggestions" id="suggestions"></div>
+    
+    <script>
+
+        const data = [
+            "Dragon Ball",
+            "Voltes V",
+            "Gundam",
+            "Pokemon",
+            "Flame of Recca",
+            "One Piece",
+            "Akame Ga Kill",
+            "Pagong",
+            "Matsing",
+        ];
+
+        const clickCounts = {};
+
+        function updateClickCount(item) {
+            if (clickCounts[item] === undefined) {
+                clickCounts[item] = 1;
+            } else {
+                clickCounts[item]++;
+            }
+
+            const clickCountList = document.getElementById("clickCountList");
+            clickCountList.innerHTML = "";
+
+            for (const item in clickCounts) {
+                const li = document.createElement("li");
+                li.textContent = `${item}: ${clickCounts[item]} clicks`;
+                clickCountList.appendChild(li);
+            }
+        }
+
+        function autocomplete(input) {
+            const suggestions = document.getElementById("suggestions");
+            suggestions.innerHTML = "";
+            const inputText = input.value.toLowerCase();
+
+            const filteredData = data.filter(item => item.toLowerCase().includes(inputText));
+            filteredData.forEach(item => {
+                const suggestion = document.createElement("div");
+                suggestion.className = "autocomplete-suggestion";
+                suggestion.textContent = item;
+
+                suggestion.addEventListener("click", () => {
+                    updateClickCount(item);
+                    input.value = item;
+                    suggestions.innerHTML = "";
+                });
+
+                suggestions.appendChild(suggestion);
+            });
+
+            if (inputText.length > 0) {
+                suggestions.style.display = "block";
+            } else {
+                suggestions.style.display = "none";
+            }
+        }
+
+        const searchInput = document.getElementById("searchInput");
+        searchInput.addEventListener("input", () => {
+            autocomplete(searchInput);
+        });
+    </script>
+    
+    <footer>
+        <h2>Click Counter</h2>
+        <ul id="clickCountList"></ul>
+    </footer>
+</body>
+</html>
+
